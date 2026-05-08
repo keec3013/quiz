@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>광덕산 환경교육센터 퀴즈</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #2d5a27;
+    --moss: #4a7c3f;
+    --leaf: #7ab648;
+    --sky: #e8f4e8;
+    --earth: #5c4033;
+    --bark: #8b6355;
+    --parchment: #f5f0e8;
+    --cream: #faf7f2;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--cream);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 20px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* 배경 패턴 */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(74,124,63,0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(45,90,39,0.06) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .card {
+    position: relative;
+    z-index: 1;
+    background: white;
+    border-radius: 20px;
+    max-width: 480px;
+    width: 100%;
+    overflow: hidden;
+    box-shadow:
+      0 4px 6px rgba(0,0,0,0.04),
+      0 20px 40px rgba(45,90,39,0.12);
+    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-header {
+    background: var(--forest);
+    padding: 28px 28px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-header::after {
+    content: '🌿';
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    font-size: 80px;
+    opacity: 0.12;
+    transform: rotate(20deg);
+  }
+
+  .floor-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.9);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+
+  .q-number {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 13px;
+    color: var(--leaf);
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  .card-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 15px;
+    color: rgba(255,255,255,0.7);
+    font-weight: 400;
+  }
+
+  .card-body {
+    padding: 32px 28px 36px;
+  }
+
+  .question-text {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a2e18;
+    line-height: 1.6;
+    letter-spacing: -0.3px;
+  }
+
+  .question-sub {
+    margin-top: 16px;
+    font-size: 14px;
+    color: #6b7c69;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .divider {
+    margin: 24px 0;
+    height: 1px;
+    background: linear-gradient(to right, var(--leaf), transparent);
+    opacity: 0.3;
+  }
+
+  .hint-box {
+    background: var(--sky);
+    border-left: 3px solid var(--leaf);
+    border-radius: 0 8px 8px 0;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--forest);
+    line-height: 1.6;
+    display: none;
+  }
+
+  .hint-box.visible { display: block; }
+
+  .footer-note {
+    margin-top: 20px;
+    font-size: 12px;
+    color: #aab8a9;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  /* 오류 화면 */
+  .error-screen {
+    text-align: center;
+    padding: 48px 28px;
+    animation: slideUp 0.5s ease both;
+  }
+
+  .error-icon { font-size: 48px; margin-bottom: 16px; }
+  .error-title { font-family: 'Noto Serif KR', serif; font-size: 20px; color: #333; margin-bottom: 8px; }
+  .error-desc { font-size: 14px; color: #888; }
+
+  /* 센터 로고 영역 */
+  .logo-area {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .logo-text {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 12px;
+    color: #8aaa85;
+    letter-spacing: 1.5px;
+    font-weight: 400;
+  }
+</style>
+</head>
+<body>
+
+<div class="logo-area">
+  <div class="logo-text">광덕산환경교육센터</div>
+</div>
+
+<div class="card" id="card">
+  <div class="error-screen" id="errorScreen">
+    <div class="error-icon">🌱</div>
+    <div class="error-title">문제를 찾을 수 없어요</div>
+    <div class="error-desc">올바른 QR코드를 스캔해주세요</div>
+  </div>
+</div>
+
+<script>
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// 📝 문제 데이터 — 여기만 수정하세요
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const questions = {
+  // 지하 1층 (id: 1~5)
+  1: {
+    floor: "지하 1층",
+    number: "Q1",
+    question: "지구의 온도조절장치는 무엇일까요? 내용을 읽어보고 적어주세요.",
+    sub: "필요 시 보충 설명을 여기에 입력 (없으면 비워두세요)",
+    hint: ""  // 힌트 있으면 입력, 없으면 빈칸
+  },
+  2: {
+    floor: "지하 1층",
+    number: "Q2",
+    question: "(사)광덕산환경교육센터는 땅속과 땅위의 온도차이를 이용해 냉난방을 하고 있어요. 이 시설을 'OO발전' 이라고 합니다. OO에 들어갈 말을 적어주세요.",
+    sub: "",
+    hint: ""
+  },
+  3: {
+    floor: "지하 1층",
+    number: "Q3",
+    question: "생존을 위한 따듯한 기술이라고 불립니다. 대표적인 OO기술을 사용한 로켓스토브에는 ‘케이팝데몬헌터스’에 출연한 친구가 그려져 있어요. OO에 들어갈 말을 적어주세요.",
+    sub: "",
+    hint: ""
+  },
+  4: {
+    floor: "지하 1층",
+    number: "Q4",
+    question: "바깥의 햇빛을 지하까지 닿게 해서 화단을 만들었어요. 밝으니, 전기사용이 줄어들겠죠? OO채광이라고 합니다. OO에 들어갈 말을 적어주세요.",
+    sub: "",
+    hint: ""
+  },
+
+  // 1층 (id: 6~10)
+  6: {
+    floor: "1층",
+    number: "Q6",
+    question: "여기에 문제를 입력하세요",
+    sub: "",
+    hint: ""
+  },
+  7: {
+    floor: "1층",
+    number: "Q7",
+    question: "여기에 문제를 입력하세요",
+    sub: "",
+    hint: ""
+  },
+  8: {
+    floor: "1층",
+    number: "Q8",
+    question: "여기에 문제를 입력하세요",
+    sub: "",
+    hint: ""
+  },
+  9: {
+    floor: "1층",
+    number: "Q9",
+    question: "여기에 문제를 입력하세요",
+    sub: "",
+    hint: ""
+  },
+  10: {
+    floor: "1층",
+    number: "Q10",
+    question: "여기에 문제를 입력하세요",
+    sub: "",
+    hint: ""
+  },
+
+  // 2층 (id: 11~15)
+  11: {
+    floor: "2층",
+    number: "Q11",
+    question: "여기에 문제를 입력하세요",
+    sub: "",
+    hint: ""
+  },
+  12: {
+    floor: "2층",
+    number: "Q12",
+    question: "여기에 문제를 입력하세요",
+    sub: "",
+    hint: ""
+  },
+  13: {
+    floor: "2층",
+    number: "Q13",
+    question: "여기에 문제를 입력하세요",
+    sub: "",
+    hint: ""
+  },
+  14: {
+    floor: "2층",
+    number: "Q14",
+    question: "여기에 문제를 입력하세요",
+    sub: "",
+    hint: ""
+  },
+  15: {
+    floor: "2층",
+    number: "Q15",
+    question: "여기에 문제를 입력하세요",
+    sub: "",
+    hint: ""
+  },
+};
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const params = new URLSearchParams(window.location.search);
+const id = parseInt(params.get('id'));
+const q = questions[id];
+const card = document.getElementById('card');
+
+if (q) {
+  card.innerHTML = `
+    <div class="card-header">
+      <div class="floor-badge">${q.floor}</div>
+      <div class="q-number">${q.number}</div>
+      <div class="card-title">광덕산환경교육센터</div>
+    </div>
+    <div class="card-body">
+      <div class="question-text">${q.question}</div>
+      ${q.sub ? `<div class="question-sub">${q.sub}</div>` : ''}
+      ${q.hint ? `<div class="divider"></div><div class="hint-box visible">💡 ${q.hint}</div>` : ''}
+      <div class="footer-note">정답은 현장에서 확인하세요 🌿</div>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
