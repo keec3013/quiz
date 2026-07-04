@@ -15,6 +15,9 @@
     --bark: #8b6355;
     --parchment: #f5f0e8;
     --cream: #faf7f2;
+    --answer-bg: #fff3e0;
+    --answer-border: #ff9800;
+    --answer-text: #e65100;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -147,15 +150,31 @@
     color: var(--forest);
     line-height: 1.6;
     display: none;
+    margin-bottom: 16px;
   }
 
   .hint-box.visible { display: block; }
 
-  .footer-note {
+  /* 정답 박스 스타일 추가 */
+  .answer-box {
+    background: var(--answer-bg);
+    border-left: 3px solid var(--answer-border);
+    border-radius: 0 8px 8px 0;
+    padding: 16px;
     margin-top: 20px;
+    font-size: 16px;
+    color: var(--answer-text);
+    font-weight: 700;
+    line-height: 1.5;
+    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .answer-label {
+    display: block;
     font-size: 12px;
-    color: #aab8a9;
-    text-align: center;
+    color: #b26a00;
+    font-weight: 500;
+    margin-bottom: 6px;
     letter-spacing: 0.5px;
   }
 
@@ -203,7 +222,7 @@
 
 <script>
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// 📝 문제 데이터 — 여기만 수정하세요
+// 📝 문제 데이터 — 여기만 수정하세요 (answer 항목 추가됨)
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 const questions = {
   // 지하 1층 (id: 1~5)
@@ -212,28 +231,32 @@ const questions = {
     number: "Q1",
     question: "지구가 너무 뜨거워지지도, 너무 차가워지지도 않게 온도를 딱 맞게 지켜주는 '지구의 에어컨' 같은 게 있대요! 우리 주변에서 지구의 온도를 조절해주는 고마운 친구는 누구일까요? 안내판을 천천히 읽어보고 가족과 함께 이야기 나눠 보세요.",
     sub: "",
-    hint: ""  // 힌트 있으면 입력, 없으면 빈칸
+    hint: "",
+    answer: "바다"
   },
   2: {
     floor: "지하 1층",
     number: "Q2",
     question: "땅속은 여름에는 시원하고 겨울에는 따뜻하다는 사실, 알고 있었나요? 광덕산환경교육센터는 이 신기한 땅의 비밀을 이용해서 시원하게, 또 따뜻하게 지내고 있어요. 이런 시설을 '○○발전'이라고 부른답니다. 👉 ○○에 들어갈 말은?",
     sub: "",
-    hint: ""
+    hint: "",
+    answer: "지열발전"
   },
   3: {
     floor: "지하 1층",
     number: "Q3",
     question: "추운 곳에서도 적은 나무로 따뜻하게 요리하고 몸을 녹일 수 있는 '생존을 위한 따뜻한 기술'이 있어요. '케이팝 데몬 헌터스'의 인기 캐릭터도 그려져 있답니다. 찾아보세요! 👀 이런 기술을 '○○기술'이라고 해요. 👉 ○○에 들어갈 말은?",
     sub: "",
-    hint: ""
+    hint: "",
+    answer: "적정"
   },
   4: {
     floor: "지하 1층",
     number: "Q4",
     question: "지하인데도 햇빛이 쨍~하고 들어와서 예쁜 꽃과 식물이 자라는 화단이 있어요! 신기하죠? 바깥의 햇빛을 지하까지 데려와 주니까 전등을 켜지 않아도 환하답니다. 전기도 아끼고, 식물도 행복하고! 이런 걸 '○○채광'이라고 해요. 👉 ○○에 들어갈 말은?",
     sub: "",
-    hint: ""
+    hint: "",
+    answer: "자연"
   },
 
   // 1층 (id: 6~10)
@@ -242,28 +265,32 @@ const questions = {
     number: "Q6",
     question: "건물의 벽을 가만히 만져보고 살펴보세요. 시멘트가 아니라 자연에서 가져온 재료로 만들어졌답니다. 옛날 우리 조상들도 집을 지을 때 사용했던 재료예요. 따뜻한 느낌이 들지 않나요? 이 재료의 이름은 무엇일까요?",
     sub: "",
-    hint: ""
+    hint: "",
+    answer: "황토"
   },
   7: {
     floor: "1층",
     number: "Q7",
     question: "'쌩~' 하고 부는 바람의 힘으로 전기를 만드는 시설이에요. 그런데 실내에는 바람이 불지 않으니, 우리 가족이 직접 손으로 돌려서 전기를 만들어 볼까요? 날개가 빙글빙글 돌아갈 때마다 전기가 만들어진답니다. 이런 시설을 '○○발전'이라고 해요. ○○에 들어갈 말은?",
     sub: "",
-    hint: ""
+    hint: "",
+    answer: "풍력"
   },
   8: {
     floor: "1층",
     number: "Q8",
     question: "콩콩 밟거나 폴짝폴짝 뛰면 전구에 반짝! 불이 들어오는 신기한 발판이 있어요. 우리 몸을 움직이는 힘이 전기로 바뀌는 거죠. 가족과 함께 신나게 뛰어보세요! 이런 시설을 '○○발전'이라고 합니다. ○○에 들어갈 말은?",
     sub: "",
-    hint: ""
+    hint: "",
+    answer: "압전"
   },
   9: {
     floor: "1층",
     number: "Q9",
     question: "내가 직접 전기를 만든다!' 페달을 힘차게 굴리면 전구가 환하게 밝아지는 자전거예요. 다리에 힘을 주고 열심히 굴려볼까요? 이 자전거의 이름은 '○○○○자전거'랍니다. ○○○○에 들어갈 말은?",
     sub: "",
-    hint: ""
+    hint: "",
+    answer: "자가발전"
   },
 
   // 2층 (id: 11~15)
@@ -272,28 +299,32 @@ const questions = {
     number: "Q11",
     question: "계단을 한 칸 한 칸 오르다 보면 멋진 액자가 보일 거예요. 작은 곤충부터 커다란 동물까지, 그리고 우리 사람까지… 지구에 사는 모든 생명은 보이지 않는 끈으로 이어져 있답니다. 이 액자의 제목은 '지구별 생명의 ○○'이에요. ○○에 들어갈 말은?",
     sub: "",
-    hint: ""
+    hint: "",
+    answer: "그물"
   },
   12: {
     floor: "2층",
     number: "Q12",
     question: "쨍쨍한 햇빛을 받아 전기를 만드는 시설이에요. 우리 센터의 지붕 위에도 있고, 하늘정원(옥상)에도 설치되어 있답니다. 한번 올려다보세요! 이런 시설을 '○○○발전'이라고 해요. ○○○에 들어갈 말은?",
     sub: "",
-    hint: ""
+    hint: "",
+    answer: "태양광"
   },
   13: {
     floor: "2층",
     number: "Q13",
     question: "하늘정원에서 주변을 둘러보세요. 산도, 나뭇가지도, 구름도 모두 부드럽게 휘어져 있죠? 자연에는 '직선'이 거의 없답니다.<br>우리 센터 건물도 자연을 닮아 반듯하지 않고 부드럽게 구부러진 모양으로 지어졌어요. 건물을 한번 살펴보세요!<br>이렇게 부드럽게 휘어진 선을 무엇이라고 부를까요?",
     sub: "",
-    hint: "'직선'의 반대말, 두 글자!"
+    hint: "'직선'의 반대말, 두 글자!",
+    answer: "곡선"
   },
   14: {
     floor: "2층",
     number: "Q14",
     question: "'이건 그냥 버리는 거 아니야?' 아니에요! 버려지는 병뚜껑이 멋진 새 물건으로 다시 태어나는 곳이에요. 단순히 재활용하는 게 아니라, 더 새롭고 멋진 쓰임을 더해주는 거죠. 영어로는 '업사이클링'이라고 하는데, 우리말로는 '○○○'이라고 한답니다. ○○○에 들어갈 말은?",
     sub: "",
-    hint: ""
+    hint: "",
+    answer: "새활용"
   },
 };
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -314,7 +345,12 @@ if (q) {
       <div class="question-text">${q.question}</div>
       ${q.sub ? `<div class="question-sub">${q.sub}</div>` : ''}
       ${q.hint ? `<div class="divider"></div><div class="hint-box visible">💡 ${q.hint}</div>` : ''}
-      <div class="footer-note">정답은 현장에서 확인하세요 🌿</div>
+      ${q.answer ? `
+        <div class="answer-box">
+          <span class="answer-label">정답</span>
+          🎉 ${q.answer}
+        </div>
+      ` : ''}
     </div>
   `;
 }
